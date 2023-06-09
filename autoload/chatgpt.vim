@@ -42,6 +42,7 @@ function! chatgpt#send(text) abort
 endfunction
 
 function! chatgpt#raw(text) abort
+  call s:chatgpt_cb_out("", json_encode({'eof': 0, 'error': '', 'text': printf(">>> %s\n", a:text) })) 
   let yanked_text = s:get_visual_selection()
   let l:lines = [
   \ a:text,
@@ -81,6 +82,7 @@ function! chatgpt#explain(text) abort
   \  '```',
   \]
       
+  call s:chatgpt_cb_out("", json_encode({'eof': 0, 'error': '', 'text': printf(">>> %s\n", join([a:text, l:question], "\n")) })) 
   call chatgpt#send(join(l:lines, "\n"))
 endfunction
 
@@ -100,6 +102,7 @@ function! chatgpt#rewrite(text) abort
   \  '```',
   \]
       
+  call s:chatgpt_cb_out("", json_encode({'eof': 0, 'error': '', 'text': printf(">>> %s\n", join([a:text, l:question], "\n")) })) 
   call chatgpt#send(join(l:lines, "\n"))
 
 endfunction
@@ -117,6 +120,7 @@ function! chatgpt#fix(text) abort
   \  '```',
   \]
       
+  call s:chatgpt_cb_out("", json_encode({'eof': 0, 'error': '', 'text': printf(">>> %s\n", join([a:text, l:question], "\n")) })) 
   call chatgpt#send(join(l:lines, "\n"))
 
 
@@ -143,6 +147,7 @@ function! chatgpt#review(text) abort
   \  '```',
   \]
       
+  call s:chatgpt_cb_out("", json_encode({'eof': 0, 'error': '', 'text': printf(">>> %s\n", join([a:text, l:question], "\n")) })) 
   call chatgpt#send(join(l:lines, "\n"))
 
 
@@ -160,6 +165,7 @@ function! chatgpt#code_review_please() abort
   let l:lines = [
   \  l:question,
   \  '',
+  A
   \] + getline(1, '$')
   call chatgpt#send(join(l:lines, "\n"))
 endfunction
