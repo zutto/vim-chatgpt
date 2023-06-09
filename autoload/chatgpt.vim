@@ -34,9 +34,125 @@ endfunction
 
 function! chatgpt#send(text) abort
   let l:ch = s:get_channel()
+ 
+  let l:role = get(g:, 'chatgpt_role', $ROLE)
+  
   call ch_setoptions(l:ch, {'out_cb': function('s:chatgpt_cb_out'), 'err_cb': function('s:chatgpt_cb_err')})
-  call ch_sendraw(l:ch, json_encode({'text': a:text}))
+  call ch_sendraw(l:ch, json_encode({'text': a:text, 'role': l:role}))
 endfunction
+
+function! chatgpt#raw(text) abort
+  let yanked_text = s:get_visual_selection()
+  let l:lines = [
+  \ a:text,
+  \ yanked_text,
+  \]
+     
+" echo join(l:lines, "\n")
+  call chatgpt#send(join(l:lines, "\n"))
+endfunction
+
+
+function! s:get_visual_selection()
+    " Why is this not a built-in Vim script function?!
+    let [line_start, column_start] = getpos("'<")[1:2]
+    let [line_end, column_end] = getpos("'>")[1:2]
+    let lines = getline(line_start, line_end)
+    if len(lines) == 0
+        return ''
+    endif
+    let lines[-1] = lines[-1][: column_end - (&selection == 'inclusive' ? 1 : 2)]
+    let lines[0] = lines[0][column_start - 1:]
+    return join(lines, "\n")
+endfunction
+
+
+
+function! chatgpt#explain(text) abort
+  let yanked_text = s:get_visual_selection()
+  let l:lang = get(g:, 'chatgpt_lang', $LANG)
+  let l:question = l:lang =~# '^ja' ? 'このプログラムをレビューして下さい。' : 'please explain this code.'
+  let l:lines = [
+  \ a:text,
+  \  l:question,
+  \  '',
+  \  '```',
+  \ yanked_text,
+  \  '```',
+  \]
+      
+  call chatgpt#send(join(l:lines, "\n"))
+endfunction
+
+
+function! chatgpt#rewrite(text) abort
+   
+  let yanked_text = s:get_visual_selection()
+
+  let l:lang = get(g:, 'chatgpt_lang', $LANG)
+  let l:question = l:lang =~# '^ja' ? 'このプログラムをレビューして下さい。' : 'please re-write this code.'
+  let l:lines = [
+  \ a:text,
+  \  l:question,
+  \  '',
+  \  '```',
+  \ yanked_text,
+  \  '```',
+  \]
+      
+  call chatgpt#send(join(l:lines, "\n"))
+
+endfunction
+
+function! chatgpt#fix(text) abort
+  let yanked_text = s:get_visual_selection()
+  let l:lang = get(g:, 'chatgpt_lang', $LANG)
+  let l:question = l:lang =~# '^ja' ? 'このプログラムをレビューして下さい。' : 'please fix this code.'
+  let l:lines = [
+  \ a:text,
+  \  l:question,
+  \  '',
+  \  '```',
+  \ yanked_text,
+  \  '```',
+  \]
+      
+  call chatgpt#send(join(l:lines, "\n"))
+
+
+endfunction
+
+
+function! chatgpt#set_role(text) abort
+ let g:chatgpt_role = a:text
+ echo "Role set to " . a:text
+endfunction
+
+
+
+function! chatgpt#review(text) abort
+  let yanked_text = s:get_visual_selection()
+  let l:lang = get(g:, 'chatgpt_lang', $LANG)
+  let l:question = l:lang =~# '^ja' ? 'このプログラムをレビューして下さい。' : 'please review this code.'
+  let l:lines = [
+  \ a:text,
+  \  l:question,
+  \  '',
+  \  '```',
+  \ yanked_text,
+  \  '```',
+  \]
+      
+  call chatgpt#send(join(l:lines, "\n"))
+
+
+endfunction
+
+
+
+
+
+
 
 function! chatgpt#code_review_please() abort
   let l:lang = get(g:, 'chatgpt_lang', $LANG)

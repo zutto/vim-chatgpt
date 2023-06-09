@@ -39,14 +39,29 @@ Settings                                           *vim-chatgpt-settings*
                       chatGPT. Supported languages are 'ja' for Japanese.
 		      Other values or unset will default to English.
 
-
+"g:chatgpt_role" --- set role for your chatgpt
 Commands:                                           *vim-chatgpt-commands*
 ------------------------------------------------------------------------------
+All of these commands support including code block by highlighting code,
+except the *ChatGPTCodeReviewWholeFilePlease* -command. All of them basically
+run ChatGPT + premade text block (which is not great), so using the raw
+ChatGPT is recommended.
 
-*CodeReviewPlease*  ---  Launch a code review of current buffer.
-			 There are size limitations, see |vim-chatgpt-cli|
 *ChatGPT*           ---  Ask a question to ChatGPT. Ranges are not allowed.
 			 For example you could write
 			 :ChatGPT How do I trim a string in golang?
+
+*ChatGPTExplain*    --- have chatgpt explain code to you
+
+*ChatGPTRewrite*    --- have chatgpt rewrite code for you
+
+
+*ChatGPTFix*        --- have chatgpt fix code for you
+
+*ChatGPTCodeReviewPlease* --- have chatgpt codereview for you
+
+*ChatGPTCodeReviewWholeFilePlease* --- codereviews whole file.
+
+*ChatGPTSetRole*    --- set your chatgpt role.
 
 vim:tw=78:ts=8:ft=help:norl:
