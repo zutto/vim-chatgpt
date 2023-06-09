@@ -10,6 +10,9 @@ Vim plugin for ChatGPT
 
 ![](https://storage.googleapis.com/zenn-user-upload/595ffe179dd5-20221222.gif)
 
+[![asciicast](https://asciinema.org/a/jrAdsXBkpRXfcfr50FUOQuQA4.svg)](https://asciinema.org/a/jrAdsXBkpRXfcfr50FUOQuQA4)
+
+
 ## Requirements
 
 <https://github.com/mattn/chatgpt>
