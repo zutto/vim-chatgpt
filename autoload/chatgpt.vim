@@ -2,7 +2,7 @@ scriptencoding utf-8
 
 function! s:get_channel() abort
   if !exists('s:job') || job_status(s:job) !=# 'run'
-    let s:job = job_start(['chatgpt', '-json'], {'in_mode': 'json', 'out_mode': 'nl', 'noblock': 1})
+    let s:job = job_start(['python3.11', '/usr/local/bin/chatgpt'], {'in_mode': 'json', 'out_mode': 'nl', 'noblock': 1})
     let s:ch = job_getchannel(s:job)
   endif
   return s:ch
@@ -38,7 +38,7 @@ function! chatgpt#send(text) abort
   let l:role = get(g:, 'chatgpt_role', $ROLE)
   
   call ch_setoptions(l:ch, {'out_cb': function('s:chatgpt_cb_out'), 'err_cb': function('s:chatgpt_cb_err')})
-  call ch_sendraw(l:ch, json_encode({'text': a:text, 'role': l:role}))
+  call ch_sendraw(l:ch, printf("%s\n", json_encode({'text': a:text, 'role': l:role})))
 endfunction
 
 function! chatgpt#raw(text) abort
