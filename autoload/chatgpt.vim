@@ -9,23 +9,25 @@ function! s:get_channel() abort
 endfunction
 
 function! s:chatgpt_cb_out(ch, msg) abort
-  let l:msg = json_decode(a:msg)
-  let l:winid = bufwinid('__CHATGPT__')
-  if l:winid ==# -1
-    silent noautocmd split __CHATGPT__
-    setlocal buftype=nofile bufhidden=wipe noswapfile
-    setlocal wrap nonumber signcolumn=no filetype=markdown
-    wincmd p
+  if a:msg != "None"
+    let l:msg = json_decode(a:msg)
     let l:winid = bufwinid('__CHATGPT__')
+    if l:winid ==# -1
+      silent noautocmd split __CHATGPT__
+      setlocal buftype=nofile bufhidden=wipe noswapfile
+      setlocal wrap nonumber signcolumn=no filetype=markdown
+      wincmd p
+      let l:winid = bufwinid('__CHATGPT__')
+    endif
+    call win_execute(l:winid, 'setlocal modifiable', 1)
+    call win_execute(l:winid, 'silent normal! GA' .. l:msg['text'], 1)
+    if l:msg['error'] != ''
+      call win_execute(l:winid, 'silent normal! Go' .. l:msg['error'], 1)
+    elseif l:msg['eof']
+      call win_execute(l:winid, 'silent normal! Go', 1)
+    endif
+    call win_execute(l:winid, 'setlocal nomodifiable nomodified', 1)
   endif
-  call win_execute(l:winid, 'setlocal modifiable', 1)
-  call win_execute(l:winid, 'silent normal! GA' .. l:msg['text'], 1)
-  if l:msg['error'] != ''
-    call win_execute(l:winid, 'silent normal! Go' .. l:msg['error'], 1)
-  elseif l:msg['eof']
-    call win_execute(l:winid, 'silent normal! Go', 1)
-  endif
-  call win_execute(l:winid, 'setlocal nomodifiable nomodified', 1)
 endfunction
 
 function! s:chatgpt_cb_err(ch, msg) abort
@@ -129,7 +131,7 @@ endfunction
 
 function! chatgpt#set_role(text) abort
  let g:chatgpt_role = a:text
- echo "Role set to " . a:text
+  call s:chatgpt_cb_out("", json_encode({'eof': 0, 'error': '', 'text': printf(">>> Set role to: %s\n", a:text) })) 
 endfunction
 
 
