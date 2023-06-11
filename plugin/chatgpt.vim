@@ -1,4 +1,5 @@
 command -nargs=* -range ChatGPT call chatgpt#raw(<q-args>)
+command -nargs=* -range ChatGPT4 call chatgpt#raw4(<q-args>)
 command -nargs=* -range ChatGPTExplain call chatgpt#explain(<q-args>)
 command -nargs=* -range ChatGPTRewrite call chatgpt#rewrite(<q-args>)
 command -nargs=* -range ChatGPTFix call chatgpt#fix(<q-args>)
