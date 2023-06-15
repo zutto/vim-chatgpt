@@ -31,6 +31,7 @@ function! s:chatgpt_cb_out(ch, msg) abort
 endfunction
 
 function! s:chatgpt_cb_err(ch, msg) abort
+  call s:chatgpt_cb_out("", json_encode({'eof': 0, 'error': '', 'text': printf("[ERROR]>>> %s\n", a:msg) })) 
   echohl ErrorMsg | echom '[chatgpt ch err] ' .. a:msg | echohl None
 endfunction
 
